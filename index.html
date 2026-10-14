@@ -51,6 +51,7 @@
             button[onclick^="selectOption"], button[onclick^="selectBonus"] { font-size: 1.15rem !important; }
             h3.leading-relaxed.text-slate-900 { font-size: 1.5rem !important; }
         }
+        #mobile-dd button { display: block; width: 100%; text-align: right; padding: 12px 16px; font-size: 1rem; border-top: 1px solid #f1f5f9; }
         @media (max-width: 640px) {
             html, body { font-size: 16px; }
             main, .max-w-3xl, .max-w-xl, .max-w-4xl { padding-left: 12px; padding-right: 12px; }
@@ -128,17 +129,19 @@
 
     <div class="md:hidden bg-white border-b border-slate-200 sticky top-0 z-40" style="padding-top: env(safe-area-inset-top);">
         <div class="flex gap-2 overflow-x-auto px-3 py-2 text-sm font-bold text-slate-700" style="-webkit-overflow-scrolling: touch;">
-            <button onclick="go('home')" class="shrink-0 px-4 py-2 rounded-full bg-slate-100">الرئيسة</button>
-            <button onclick="openQuizPicker()" class="shrink-0 px-4 py-2 rounded-full bg-[#8a1538]/10 text-[#8a1538]">التدريبات</button>
-            <button onclick="checkBranchAccess('comprehensive')" class="shrink-0 px-4 py-2 rounded-full bg-slate-100">الاختبار الشامل</button>
-            <button onclick="go('about')" class="shrink-0 px-4 py-2 rounded-full bg-slate-100">عن المنصة</button>
+            <button onclick="go('home')" class="shrink-0 px-4 py-2 rounded-full bg-slate-100 active:bg-slate-200 outline-none">الرئيسة</button>
+            <button onclick="toggleMobileMenu('lessons')" class="shrink-0 px-4 py-2 rounded-full bg-slate-100 active:bg-slate-200 outline-none">اختيار الدروس <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
+            <button onclick="toggleMobileMenu('quizzes')" class="shrink-0 px-4 py-2 rounded-full bg-slate-100 active:bg-slate-200 outline-none">التدريبات <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
+            <button onclick="checkBranchAccess('comprehensive')" class="shrink-0 px-4 py-2 rounded-full bg-slate-100 active:bg-slate-200 outline-none">الاختبار الشامل</button>
+            <button onclick="go('about')" class="shrink-0 px-4 py-2 rounded-full bg-slate-100 active:bg-slate-200 outline-none">عن المنصة</button>
         </div>
+        <div id="mobile-dd" onclick="this.classList.add('hidden')" class="hidden border-t border-slate-200 bg-white max-h-72 overflow-y-auto text-sm text-slate-800"></div>
     </div>
 
 
-    <div id="announcement-banner" class="hidden bg-amber-500 text-white text-xs font-semibold py-2.5 px-4 shadow-inner text-center">
+    <div id="announcement-banner" class="hidden bg-[#8a1538] text-white text-xs font-semibold py-2.5 px-4 shadow-inner text-center">
         <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
-            <i class="fa-solid fa-bullhorn text-amber-200"></i>
+            <i class="fa-solid fa-bullhorn text-pink-200"></i>
             <span id="announcement-text"></span>
         </div>
     </div>
@@ -191,9 +194,9 @@
         </div>
     </div>
 
-    <footer class="bg-[#165A7B] text-slate-100 mt-16 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm font-['Cairo']">
-            <div class="space-y-3">
+    <footer class="bg-[#165A7B] text-slate-100 mt-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm font-['Cairo']">
+            <div class="space-y-1.5">
                 <div class="flex items-center gap-2 text-white font-bold text-base">
                     <div class="w-8 h-8 rounded-lg bg-[#8a1538] flex items-center justify-center text-white">أ</div>
                     <span>منصة الإصباح التعليمية</span>
@@ -203,9 +206,9 @@
                 </p>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-1.5">
                 <h4 class="font-bold text-white text-xs">روابط سريعة</h4>
-                <div class="flex flex-col space-y-2 text-slate-200 text-xs">
+                <div class="flex flex-row flex-wrap gap-x-4 gap-y-1 text-slate-200 text-xs">
                     <button onclick="go('home')" class="text-right hover:text-[#EAB893] transition-colors">الرئيسية</button>
                     <button onclick="checkBranchAccess('branch')" class="text-right hover:text-[#EAB893] transition-colors">اختيار الدروس</button>
                     <button onclick="checkBranchAccess('quizzes')" class="text-right hover:text-[#EAB893] transition-colors">التدريبات</button>
@@ -214,7 +217,7 @@
                 </div>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-1.5">
                 <h4 class="font-bold text-white text-xs">إدارة المنصة</h4>
                 <div class="flex flex-col space-y-2 text-xs">
                     <button onclick="openAdminModal()" class="text-right text-[#EAB893] hover:underline font-bold flex items-center gap-1.5">
@@ -225,12 +228,29 @@
                 </div>
             </div>
         </div>
-        <div class="border-t border-[#165A7B]/60 py-4 text-center text-xs text-slate-300 font-['Cairo']">
+        <div class="border-t border-[#165A7B]/60 py-2 text-center text-xs text-slate-300 font-['Cairo']">
             جميع الحقوق محفوظة &copy; 2026 - منصة الإصباح في اللغة العربية
         </div>
     </footer>
 
     <script>
+        // تخزين آمن: إن مُنع التخزين المحلي (ملف محفوظ على الجوال أو معاينة داخل تطبيق) نستخدم ذاكرة مؤقتة بدل أن يتوقف الموقع
+        var _LS = (function () {
+            try {
+                var t = '__esbah_test__';
+                window.localStorage.setItem(t, '1'); window.localStorage.removeItem(t);
+                return window.localStorage;
+            } catch (e) {
+                var mem = {};
+                return {
+                    getItem: function (k) { return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; },
+                    setItem: function (k, v) { mem[k] = String(v); },
+                    removeItem: function (k) { delete mem[k]; },
+                    clear: function () { mem = {}; }
+                };
+            }
+        })();
+
         const defaultTeacherPhoto = "صورة1.jpg";
         const ADMIN_EMAIL = "sabbahquraiba2024@gmail.com";
         const ADMIN_PASS = "803352590Sb";
@@ -279,6 +299,15 @@
             go('quizzes');
         }
         function openQuizLessonIdx(i) { openQuizLesson(quizLessons(portalData.studentBranch)[i]); }
+        function toggleMobileMenu(kind) {
+            if (!portalData.studentBranch) { checkBranchAccess('branch'); return; }
+            const panel = document.getElementById('mobile-dd');
+            if (!panel.classList.contains('hidden') && panel.dataset.kind === kind) { panel.classList.add('hidden'); return; }
+            updateHeaderNav();
+            panel.innerHTML = document.getElementById(kind === 'lessons' ? 'lessons-dropdown-menu' : 'quizzes-dropdown-menu').innerHTML;
+            panel.dataset.kind = kind;
+            panel.classList.remove('hidden');
+        }
         function openQuizPicker() {
             resetQuizState();
             selectedQuizLesson = null;
@@ -330,6 +359,35 @@
             selectedOption = null; isAnswerSubmitted = false;
             renderApp();
         }
+        function pickSpread(arr, k) {
+            const m = Math.min(k, arr.length), r = [];
+            for (let j = 0; j < m; j++) r.push(arr[Math.floor((j + 0.5) * arr.length / m)]);
+            return r;
+        }
+        function startQuick() {
+            const pool = reserveFor(portalData.studentBranch, selectedQuizLesson);
+            const by = {}; pool.forEach(q => { (by[skillOf(q)] = by[skillOf(q)] || []).push(q); });
+            const list = [];
+            Object.values(by).forEach(a => { if (list.length < 5) list.push(a[0]); });
+            pool.forEach(q => { if (list.length < 5 && !list.includes(q)) list.push(q); });
+            if (!list.length) { alert('لا توجد أسئلة جديدة لهذا الدرس حالياً.'); return; }
+            remedial = { mode: 'quick', list, idx: 0, correct: 0 };
+            selectedOption = null; isAnswerSubmitted = false; renderApp();
+        }
+        function startComprehensive() {
+            const br = portalData.studentBranch;
+            if (!portalData.studentName || !br) { go('onboarding'); return; }
+            const lessons = quizLessons(br), n = lessons.length, base = Math.floor(8 / n), extra = 8 % n, list = [];
+            const lv = { easy: 0, medium: 1, hard: 2 };
+            lessons.forEach((name, i) => {
+                const pool = branchQuizzes(br).filter(q => mainIds(br).has(q.id) && (q.lesson || GENERAL_LESSON) === name)
+                    .sort((a, b) => lv[a.level || 'medium'] - lv[b.level || 'medium']);
+                pickSpread(pool, base + (i < extra ? 1 : 0)).forEach(q => list.push(q));
+            });
+            resetQuizState(); selectedQuizLesson = null;
+            remedial = { mode: 'comp', list, idx: 0, correct: 0 };
+            selectedOption = null; isAnswerSubmitted = false; go('quizzes');
+        }
         function remedialSubmit() { isAnswerSubmitted = true; const q = remedial.list[remedial.idx]; if (selectedOption === q.correct) remedial.correct++; renderApp(); }
         function remedialNext() { remedial.idx++; selectedOption = null; isAnswerSubmitted = false; renderApp(); }
         function endRemedial() { remedial = null; selectedOption = null; isAnswerSubmitted = false; renderApp(); }
@@ -351,7 +409,7 @@
             }
             return lessons.map((n, i) => {
                 const count = branchQuizzes(branch).filter(q => (q.lesson || GENERAL_LESSON) === n).length;
-                return `<button onclick="openQuizLessonIdx(${i})" class="w-full text-right px-4 py-2 hover:bg-slate-50 text-xs text-slate-700 block"><i class="fa-solid fa-pen-to-square ml-1 text-slate-400"></i> ${n} <span class="text-slate-400">(${count} سؤال)</span></button>`;
+                return `<button onclick="openQuizLessonIdx(${i})" class="w-full text-right px-4 py-2 hover:bg-slate-50 text-xs text-slate-700 block"><i class="fa-solid fa-pen-to-square ml-1 text-slate-400"></i> ${n}</button>`;
             }).join('');
         }
 
@@ -425,9 +483,9 @@
             mk("easy", "ما إعراب الفعل (يَكَادُ) في قوله تعالى: ﴿يَكَادُ زَيْتُهَا يُضِيءُ وَلَوْ لَمْ تَمْسَسْهُ نَارٌ﴾؟",
                 ["فعل ماضٍ مبني على الفتحة الظاهرة.", "فعل مضارع مرفوع وعلامة رفعه الضمة الظاهرة.", "خبر يكاد مرفوع وعلامة رفعه الضمة الظاهرة.", "فاعل مرفوع وعلامة رفعه الضمة الظاهرة."], 1,
                 "(يكاد) فعل مضارع ناقص (ناسخ) مرفوع وعلامة رفعه الضمة الظاهرة؛ واسمه (زيتها) وخبره الجملة الفعلية (يضيء) في محل نصب."),
-            mk("easy", "أيُّ الجمل الآتية حوت فعلاً ناسخاً من أخوات (كاد)؟",
+            mk("easy", "أيُّ الجمل الآتية حوت فعلاً ناسخاً من أفعال الشروع؟",
                 ["أخذ محمد الكتاب.", "أخذ اللاعب حذره من الخصم.", "أخذ الطالب يستعد لاختبار اللغة العربية.", "أخذ الرجل المال واشترى به بيتاً جديداً لأسرته."], 2,
-                "(أخذ) في «أخذ الطالب يستعد» بمعنى (بدأ) وهو من أفعال الشروع، وهي من أخوات كاد؛ اسمه (الطالب) وخبره الجملة (يستعد). وفي بقية الجمل هو فعل تام بمعنى (تناول)."),
+                "(أخذ) في «أخذ الطالب يستعد» بمعنى (بدأ) فهو من أفعال الشروع الناسخة؛ اسمه (الطالب) وخبره الجملة (يستعد). وفي بقية الجمل هو فعل تام بمعنى (تناول)."),
             mk("easy", "ما اسم (أكاد) في قوله تعالى: ﴿إِنَّ السَّاعَةَ آتِيَةٌ أَكَادُ أُخْفِيهَا لِتُجْزَى كُلُّ نَفْسٍ بِمَا تَسْعَى﴾؟",
                 ["اسم ظاهر.", "مصدر مؤول.", "ضمير مستتر.", "جملة فعلية."], 2,
                 "اسم (أكاد) ضمير مستتر وجوباً تقديره (أنا)، وخبرها الجملة الفعلية (أخفيها) في محل نصب."),
@@ -791,31 +849,38 @@
             mk6("easy", "أيُّ الآيات الآتية تضمَّنتْ مصدراً ميمياً؟", ["﴿وَتَوَاصَوْا بِالصَّبْرِ وَتَوَاصَوْا بِالْمَرْحَمَةِ﴾", "﴿فَتَكُونَ مِنَ الْمُعَذَّبِينَ﴾", "﴿وَعَلَى الْمَوْلُودِ لَهُ رِزْقُهُنَّ وَكِسْوَتُهُنَّ﴾", "﴿وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ﴾"], 0, "(المرحمة) مصدر ميمي بمعنى (الرحمة). أما (المعذبين) و(المولود) و(الكاظمين) فمشتقات."),
             mk6("medium", "حدِّد المصدر الميمي في العبارة: (مُقَاوَمَةُ الشَّهَوَاتِ وَمُدَافَعَةُ الرَّذَائِلِ مَجْلَبَةٌ لِرِضْوَانِ اللَّهِ)", ["مقاومة.", "مدافعة.", "مجلبة.", "رضوان."], 2, "(مجلبة) مصدر ميمي بمعنى (جلب) على وزن مَفْعَلة من (جلب)."),
             mk6("medium", "المصدر الميمي من الفعل (نَهَجَ) هو:", ["منهاج.", "منهج.", "مناهج.", "منتهج."], 1, "المصدر الميمي من الثلاثي على وزن مَفْعَل، فمن (نهج): مَنْهَج."),
-            mk6("medium", "المصدر الميمي في عبارة: (مَنْ كَانَ مُعْتَمَدُهُ عَلَى اللَّهِ فَلَنْ يَخِيبَ مَقْصُودُهُ فِي مُخْتَلَفِ مَنَاحِي الحَيَاةِ):", ["معتمده.", "مقصوده.", "مختلف.", "مناحي."], 1, "(مقصوده) مصدر ميمي بمعنى (قصده). و(معتمد) اسم مفعول بمعنى المُعتمَد عليه.")
+            mk6("medium", "المصدر الميمي في عبارة: (مَنْ كَانَ مُعْتَمَدُهُ عَلَى اللَّهِ فَلَنْ يَخِيبَ مَقْصُودُهُ فِي مُخْتَلَفِ مَنَاحِي الحَيَاةِ):", ["معتمده.", "مقصوده.", "مختلف.", "مناحي."], 1, "(مقصوده) مصدر ميمي بمعنى (قصده). و(معتمد) اسم مفعول بمعنى المُعتمَد عليه."),
+            // ===== أسئلة احتياطية إضافية للدرس السادس =====
+            mk6("easy", "ما المصدر الميمي من الفعل (حَمِدَ)؟", ["مَحْمَد.", "حَمَاد.", "مَحْمُود.", "حَامِد."], 0, "المصدر الميمي من الثلاثي على وزن (مَفْعَل): حمد ← مَحْمَد."),
+            mk6("easy", "أيُّ الكلمات الآتية مصدر ميمي من الفعل (جَلَبَ)؟", ["جَالِب.", "مَجْلُوب.", "مَجْلَب.", "جَلَب."], 2, "المصدر الميمي من الثلاثي على وزن (مَفْعَل): جلب ← مَجْلَب، أما (جالب) فاسم فاعل و(مجلوب) اسم مفعول."),
+            mk6("medium", "ما المصدر الميمي من الفعل (وَصَلَ)؟", ["مَوْصِل.", "مَوْصَل.", "وُصُول.", "مُوصِل."], 0, "الفعل مثال واوي (أوله واو)، فيُصاغ مصدره الميمي غالباً على وزن (مَفْعِل): وصل ← مَوْصِل."),
+            mk6("medium", "أيُّ الجمل الآتية جاءت فيها صيغة (مَدْخَل) مصدراً ميمياً؟", ["دَخَلْتُ المَدْرَسَةَ مِنْ مَدْخَلِهَا الرَّئِيسِ.", "أَعْجَبَنِي مَدْخَلُ الطَّالِبِ إِلَى القَاعَةِ بِأَدَبٍ.", "وَصَلْنَا مَدْخَلَ الشِّتَاءِ.", "الطَّالِبُ مُدْخَلٌ إِلَى المَدْرَسَةِ."], 1, "(مدخل الطالب) بمعنى (دخوله) فهو مصدر ميمي. وفي الأولى اسم مكان، وفي الثالثة اسم زمان."),
+            mk6("medium", "أيُّ الآيات الآتية اشتملتْ على مصدر ميمي؟", ["﴿وَقُل رَّبِّ أَدْخِلْنِي مُدْخَلَ صِدْقٍ﴾", "﴿وَالْمُؤْمِنُونَ كُلٌّ آمَنَ بِاللَّهِ﴾", "﴿وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ﴾", "﴿وَالْكَاظِمِينَ الْغَيْظَ﴾"], 0, "(مُدخَل صدق) مصدر ميمي بمعنى (إدخال صدق). أما (المحسنين) و(الكاظمين) فاسما فاعل."),
+            mk6("hard", "ما المصدر الميمي من الفعل (اسْتَخْرَجَ)؟", ["مُسْتَخْرِج.", "مُسْتَخْرَج.", "اسْتِخْرَاج.", "مَخْرَج."], 1, "من غير الثلاثي: نأتي بالمضارع (يستخرج) ونبدل حرف المضارعة ميماً مضمومة ونفتح ما قبل الآخر: مُسْتَخْرَج.")
         ];
 
-        const DATA_VERSION = "v20_lit_lessons_456";
-        if (localStorage.getItem('esbah_data_version') !== DATA_VERSION) {
-            localStorage.removeItem('esbah_branches');
-            localStorage.removeItem('esbah_quizzes');
-            localStorage.removeItem('esbah_student_results');
-            localStorage.setItem('esbah_data_version', DATA_VERSION);
+        const DATA_VERSION = "v21_comp_quick";
+        if (_LS.getItem('esbah_data_version') !== DATA_VERSION) {
+            _LS.removeItem('esbah_branches');
+            _LS.removeItem('esbah_quizzes');
+            _LS.removeItem('esbah_student_results');
+            _LS.setItem('esbah_data_version', DATA_VERSION);
         }
 
         let portalData = {
             currentView: 'home',
             currentLesson: null,
-            fontSizeMultiplier: parseInt(localStorage.getItem('esbah_fontSize')) || 18,
-            studentName: localStorage.getItem('esbah_studentName') || '',
-            studentBranch: localStorage.getItem('esbah_studentBranch') || '',
-            teacherName: localStorage.getItem('esbah_teacherName') || "أستاذ المادة",
-            teacherTitle: localStorage.getItem('esbah_teacherTitle') || "خبير اللغة العربية",
-            teacherPhoto: localStorage.getItem('esbah_teacherPhoto') || defaultTeacherPhoto,
-            announcement: JSON.parse(localStorage.getItem('esbah_announcement')) || {
+            fontSizeMultiplier: parseInt(_LS.getItem('esbah_fontSize')) || 18,
+            studentName: _LS.getItem('esbah_studentName') || '',
+            studentBranch: _LS.getItem('esbah_studentBranch') || '',
+            teacherName: _LS.getItem('esbah_teacherName') || "أستاذ المادة",
+            teacherTitle: _LS.getItem('esbah_teacherTitle') || "خبير اللغة العربية",
+            teacherPhoto: _LS.getItem('esbah_teacherPhoto') || defaultTeacherPhoto,
+            announcement: JSON.parse(_LS.getItem('esbah_announcement')) || {
                 active: true,
                 text: "أهلاً بكم في منصة الإصباح التفاعلية — تم تحديث شروحات الدروس المقررة وفق أحدث منهج!"
             },
-            branches: JSON.parse(localStorage.getItem('esbah_branches')) || {
+            branches: JSON.parse(_LS.getItem('esbah_branches')) || {
                 lit: {
                     title: "الفرع الأدبي",
                     description: "المقرر الشامل لطلاب الفرع الأدبي في قواعد اللغة العربية والنحو والصرف.",
@@ -1120,7 +1185,7 @@
                     ]
                 }
             },
-            quizzes: JSON.parse(localStorage.getItem('esbah_quizzes')) || DEFAULT_QUIZZES
+            quizzes: JSON.parse(_LS.getItem('esbah_quizzes')) || DEFAULT_QUIZZES
         };
 
         function openAdminModal() {
@@ -1152,7 +1217,7 @@
         function adjustFontSize(delta) {
             portalData.fontSizeMultiplier = Math.max(14, Math.min(24, portalData.fontSizeMultiplier + delta));
             document.body.style.fontSize = portalData.fontSizeMultiplier + 'px';
-            localStorage.setItem('esbah_fontSize', portalData.fontSizeMultiplier);
+            _LS.setItem('esbah_fontSize', portalData.fontSizeMultiplier);
         }
 
         function go(view, param1) {
@@ -1206,8 +1271,8 @@
         }
 
         function resetStudentData() {
-            localStorage.removeItem('esbah_studentName');
-            localStorage.removeItem('esbah_studentBranch');
+            _LS.removeItem('esbah_studentName');
+            _LS.removeItem('esbah_studentBranch');
             portalData.studentName = '';
             portalData.studentBranch = '';
             updateHeaderNav();
@@ -1221,8 +1286,8 @@
             if (!name || !branchInput) return;
             portalData.studentName = name;
             portalData.studentBranch = branchInput.value;
-            localStorage.setItem('esbah_studentName', name);
-            localStorage.setItem('esbah_studentBranch', branchInput.value);
+            _LS.setItem('esbah_studentName', name);
+            _LS.setItem('esbah_studentBranch', branchInput.value);
             updateHeaderNav();
             go('home');
         }
@@ -1262,7 +1327,6 @@
                                                 <i class="fa-solid fa-atom"></i>
                                             </div>
                                             <span class="font-bold text-slate-900 block">الفرع العلمي</span>
-                                            <span class="text-[11px] text-slate-500 font-['Open_Sans'] block">أفعال المقاربة، أدوات الشرط...</span>
                                         </div>
                                     </label>
 
@@ -1273,7 +1337,6 @@
                                                 <i class="fa-solid fa-book-open"></i>
                                             </div>
                                             <span class="font-bold text-slate-900 block">الفرع الأدبي</span>
-                                            <span class="text-[11px] text-slate-500 font-['Open_Sans'] block">إعمال المصدر، اسم التفضيل...</span>
                                         </div>
                                     </label>
                                 </div>
@@ -1290,32 +1353,32 @@
 
             if (portalData.currentView === 'home') {
                 container.innerHTML = `
-                    <div class="relative overflow-hidden rounded-2xl maroon-header text-white p-6 md:p-10 shadow-lg border border-[#8A1538]/20">
-                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                            <div class="text-center md:text-right space-y-3.5 max-w-xl">
+                    <div class="relative overflow-hidden rounded-2xl maroon-header text-white p-4 md:p-8 shadow-lg border border-[#8A1538]/20">
+                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-8">
+                            <div class="text-center md:text-right space-y-2 md:space-y-3 max-w-xl">
                                 <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/20 text-[#EAB893] text-xs font-semibold border border-white/20">
                                     <i class="fa-solid fa-graduation-cap text-xs"></i>
                                     <span>مرحباً بك، ${portalData.studentName} (${portalData.studentBranch === 'sci' ? 'الفرع العلمي' : 'الفرع الأدبي'})</span>
                                 </div>
-                                <h1 class="text-2xl md:text-3xl font-bold leading-tight text-white">
+                                <h1 class="text-xl md:text-3xl font-bold leading-tight text-white">
                                     الإصباح في <span class="text-[#EAB893]">اللغة العربية</span>
                                 </h1>
-                                <p class="text-slate-100 text-sm md:text-base leading-relaxed font-['Open_Sans']">
+                                <p class="text-slate-100 text-xs md:text-base leading-relaxed font-['Open_Sans']">
                                     مرجعك الشامل في النحو والصرف والقواعد. يحتوي الموقع على الملخصات والشروحات وبنك الأسئلة الكامل لدروس فرعك الدراسي.
                                 </p>
-                                <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
-                                    <button onclick="checkBranchAccess('branch')" class="px-5 py-2.5 rounded-xl bg-[#165A7B] hover:bg-[#124963] text-white font-semibold text-xs shadow transition-all flex items-center gap-2">
+                                <div class="pt-1 md:pt-1.5 flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-2.5">
+                                    <button onclick="checkBranchAccess('branch')" class="px-3 py-2 md:px-5 md:py-2.5 rounded-xl bg-[#165A7B] hover:bg-[#124963] text-white font-semibold text-xs shadow transition-all flex items-center gap-2">
                                         <i class="fa-solid fa-book-open"></i>
                                         <span>استعراض دروس ${portalData.studentBranch === 'sci' ? 'الفرع العلمي' : 'الفرع الأدبي'}</span>
                                     </button>
-                                    <button onclick="checkBranchAccess('quizzes')" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs shadow transition-all flex items-center gap-2">
+                                    <button onclick="checkBranchAccess('quizzes')" class="px-3 py-2 md:px-5 md:py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs shadow transition-all flex items-center gap-2">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span>بنك الأسئلة والتدريبات التفاعلية</span>
                                     </button>
                                 </div>
                             </div>
-                            <div class="flex flex-col items-center justify-center p-4 bg-white/15 backdrop-blur-md rounded-2xl border border-white/25 shadow-md w-48 relative">
-                                <div class="w-32 h-40 rounded-xl overflow-hidden border-2 border-white/40 shadow-md mb-2 bg-slate-100 flex items-center justify-center">
+                            <div class="flex flex-col items-center justify-center relative shrink-0 md:w-48">
+                                <div class="w-24 h-28 md:w-36 md:h-44 rounded-xl overflow-hidden border border-white/60 mb-1.5 md:mb-2 bg-slate-100 flex items-center justify-center">
                                     <img src="${portalData.teacherPhoto}" alt="صورة المعلم" class="w-full h-full object-cover object-top" onerror="this.onerror=null; this.src='${defaultTeacherPhoto}';">
                                 </div>
                                 <span class="text-xs font-bold text-white text-center">${portalData.teacherName}</span>
@@ -1324,7 +1387,7 @@
                         </div>
                     </div>
 
-                    <div class="gov-gray-box p-6 rounded-2xl flex items-center gap-4 shadow-sm">
+                    <div class="gov-gray-box p-5 rounded-2xl flex items-center gap-4 shadow-sm">
                         <div class="w-12 h-12 rounded-xl bg-[#f5f4ef] border border-[#aaa]/30 text-[#165A7B] flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid fa-book-open-reader"></i>
                         </div>
@@ -1420,7 +1483,7 @@
                         </div>
 
                         <div class="pt-6 border-t border-slate-100 flex justify-between items-center">
-                            <button onclick="checkBranchAccess('quizzes')" class="px-4 py-2.5 primary-button text-xs md:text-sm font-semibold flex items-center gap-2">
+                            <button onclick="openQuizLesson('${lesson.title}')" class="px-4 py-2.5 primary-button text-xs md:text-sm font-semibold flex items-center gap-2">
                                 <i class="fa-solid fa-pen-to-square"></i>
                                 <span>الانتقال لبنك الأسئلة والتطبيق العملي</span>
                             </button>
@@ -1431,7 +1494,7 @@
                 const studentBranch = portalData.studentBranch;
                 const branchName = studentBranch === 'sci' ? 'الفرع العلمي' : 'الفرع الأدبي';
                 if (remedial) {
-                    const R = remedial, titleR = R.mode === 'weak' ? 'تدريب علاجي لمهاراتك الضعيفة' : 'تدريبات إضافية للاحتراف';
+                    const R = remedial, titleR = ({ weak: 'تدريب علاجي لمهاراتك الضعيفة', quick: 'اختبار جديد مختصر', comp: 'الاختبار الشامل' })[R.mode] || 'تدريبات إضافية للاحتراف';
                     if (R.idx >= R.list.length) {
                         const p = Math.round((R.correct / R.list.length) * 100);
                         container.innerHTML = `<div class="max-w-xl mx-auto bg-white p-8 rounded-2xl border border-slate-200 shadow-lg text-center space-y-4">
@@ -1487,10 +1550,7 @@
                                                 <div class="w-11 h-11 rounded-xl bg-[#8a1538]/10 text-[#8a1538] flex items-center justify-center shrink-0"><i class="fa-solid fa-pen-to-square"></i></div>
                                                 <h3 class="font-bold text-sm text-slate-900 leading-snug">${n}</h3>
                                             </div>
-                                            <div class="flex items-center gap-1.5 flex-wrap text-[11px] font-bold">
-                                                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">${total} سؤال</span>
-                                                ${lvls.map(l => `<span class="px-2 py-0.5 rounded-full ${l.badge}">${l.name.replace('المستوى ', '')}: ${l.questions.length}</span>`).join('')}
-                                            </div>
+                                            
                                         </button>`;
                                 }).join('')}
                             </div>
@@ -1581,8 +1641,8 @@
                             </div>` : `
                             <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-right space-y-2">
                                 <div class="font-bold text-sm text-emerald-800"><i class="fa-solid fa-star ml-1"></i>لم تخطئ في أي سؤال، أحسنت!</div>
-                                <p class="text-xs text-slate-700">تدرّب على تدريبات أخرى لتصل لدرجة الاحتراف.</p>
-                                ${nAll ? `<button onclick="startRemedial('pro')" class="px-4 py-2 primary-button text-xs font-bold">ابدأ التدريبات الإضافية (${nAll} سؤال)</button>` : ''}
+                                <p class="text-xs text-slate-700">ما شاء الله، أجبت إجابات صحيحة كاملة! اختبر ثباتك الآن باختبار جديد مختصر بأسئلة لم تمرّ عليك.</p>
+                                ${nAll ? `<div class="flex gap-2 flex-wrap"><button onclick="startQuick()" class="px-4 py-2 primary-button text-xs font-bold">اختبار جديد مختصر (${Math.min(5, nAll)} أسئلة)</button><button onclick="startRemedial('pro')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-700">تدريبات إضافية للاحتراف (${nAll} سؤال)</button></div>` : ''}
                             </div>`;
                         container.innerHTML = `
                             <div class="max-w-xl mx-auto space-y-4">
@@ -1722,11 +1782,11 @@
                             </div>
                             <h3 class="font-bold text-base text-slate-900">جاهز لبدء الاختبار الشامل؟</h3>
                             <p class="text-xs md:text-sm text-slate-600 font-['Open_Sans'] max-w-lg mx-auto">
-                                يجمع هذا الاختبار أسئلة جميع دروس التدريبات على ثلاث مراحل (سهل ← متوسط ← صعب) مع نتيجة ونقاط في كل مرحلة، لتقييم مستواك النهائي واستعدادك للامتحانات الرسمية.
+                                8 أسئلة من بنك التدريبات الأصلي موزعة على دروس فرعك بالتناسب (حسب عدد الدروس)، لتقييم مستواك النهائي واستعدادك للامتحانات الرسمية.
                             </p>
                             <div class="pt-2">
-                                <button onclick="openQuizLesson('__all__')" class="px-6 py-3 primary-button text-xs font-bold shadow-md">
-                                    بدء الاختبار الشامل الآن (${filteredQuizzes.length} سؤال)
+                                <button onclick="startComprehensive()" class="px-6 py-3 primary-button text-xs font-bold shadow-md">
+                                    بدء الاختبار الشامل الآن (8 أسئلة)
                                 </button>
                             </div>
                         </div>
@@ -1968,9 +2028,9 @@
             portalData.teacherTitle = document.getElementById('admin-teacher-title').value.trim();
             portalData.teacherPhoto = document.getElementById('admin-teacher-photo').value.trim();
 
-            localStorage.setItem('esbah_teacherName', portalData.teacherName);
-            localStorage.setItem('esbah_teacherTitle', portalData.teacherTitle);
-            localStorage.setItem('esbah_teacherPhoto', portalData.teacherPhoto);
+            _LS.setItem('esbah_teacherName', portalData.teacherName);
+            _LS.setItem('esbah_teacherTitle', portalData.teacherTitle);
+            _LS.setItem('esbah_teacherPhoto', portalData.teacherPhoto);
 
             alert('تم حفظ بيانات المعلم بنجاح!');
             renderApp();
@@ -1982,7 +2042,7 @@
                 active: document.getElementById('announcement-active').checked,
                 text: document.getElementById('announcement-text-input').value.trim()
             };
-            localStorage.setItem('esbah_announcement', JSON.stringify(portalData.announcement));
+            _LS.setItem('esbah_announcement', JSON.stringify(portalData.announcement));
             alert('تم تحديث الشريطة الإخبارية!');
             updateAnnouncementDisplay();
             renderApp();
@@ -2038,7 +2098,7 @@
                 details: document.getElementById('modal-lesson-details').value.trim()
             };
             portalData.branches[branch].lessons.push(newLesson);
-            localStorage.setItem('esbah_branches', JSON.stringify(portalData.branches));
+            _LS.setItem('esbah_branches', JSON.stringify(portalData.branches));
             closeEditorModal();
             alert('تمت إضافة الدرس بنجاح!');
             renderApp();
@@ -2047,7 +2107,7 @@
         function deleteLesson(branch, id) {
             if (confirm('هل أنت تأكد من رغبتك في حذف هذا الدرس؟')) {
                 portalData.branches[branch].lessons = portalData.branches[branch].lessons.filter(l => l.id !== id);
-                localStorage.setItem('esbah_branches', JSON.stringify(portalData.branches));
+                _LS.setItem('esbah_branches', JSON.stringify(portalData.branches));
                 renderApp();
             }
         }
@@ -2216,7 +2276,7 @@
                     correct: parseInt(document.getElementById('modal-quiz-correct').value),
                     explanation: document.getElementById('modal-quiz-explanation').value.trim()
                 };
-                localStorage.setItem('esbah_quizzes', JSON.stringify(portalData.quizzes));
+                _LS.setItem('esbah_quizzes', JSON.stringify(portalData.quizzes));
                 closeEditorModal();
                 alert('تم تعديل السؤال والشرح والتعليل بنجاح!');
                 renderApp();
@@ -2241,7 +2301,7 @@
                 explanation: document.getElementById('modal-quiz-explanation').value.trim()
             };
             portalData.quizzes.push(newQuiz);
-            localStorage.setItem('esbah_quizzes', JSON.stringify(portalData.quizzes));
+            _LS.setItem('esbah_quizzes', JSON.stringify(portalData.quizzes));
             closeEditorModal();
             alert('تمت إضافة السؤال بنجاح!');
             renderApp();
@@ -2250,7 +2310,7 @@
         function deleteQuiz(id) {
             if (confirm('هل أنت تأكد من رغبتك في حذف هذا السؤال؟')) {
                 portalData.quizzes = portalData.quizzes.filter(q => q.id !== id);
-                localStorage.setItem('esbah_quizzes', JSON.stringify(portalData.quizzes));
+                _LS.setItem('esbah_quizzes', JSON.stringify(portalData.quizzes));
                 renderApp();
             }
         }
